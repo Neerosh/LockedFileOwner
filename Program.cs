@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Reflection;
 using System.Security.Principal;
 
 namespace LockedFileOwner
@@ -67,19 +66,6 @@ namespace LockedFileOwner
             var principal = new WindowsPrincipal(identity);
             return principal.IsInRole(WindowsBuiltInRole.Administrator);
         }
-        public static void StartAsAdmin(string fileName,string arguments) {
-            var proc = new Process {
-                StartInfo =
-                {
-                    FileName = fileName,
-                    Arguments = arguments,
-                    UseShellExecute = true,
-                    Verb = "runas"
-                }
-            };
-
-            proc.Start();
-        }
 
         private static void ConsoleExit(string message) {
             Console.Error.WriteLine(message);
@@ -94,11 +80,13 @@ namespace LockedFileOwner
                 ConsoleExit(message);
             }
             if (args[0].Equals("-h")) {
-                message = "LockedFileOwner Help :\n -f  used to specify the filepath of the locked file, the file path must include the file with extension ";
+                message = "LockedFileOwner Help :" +
+                    "\n -f  Used to specify the filepath of the locked file, the file path must include the file with extension "+
+                    "\n -h  Show help secion ";
                 ConsoleExit(message);
             }
             if (!args[0].Equals("-f") || args.Count() < 2) {
-                message = "Parameter not recognized, use LockedFileOwner.exe -h to get help";
+                message = "No known parameter specified, use LockedFileOwner.exe -h to get help";
                 ConsoleExit(message);
             }
             if (!IsAdministrator()) {
